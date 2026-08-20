@@ -34,4 +34,4 @@ Veja o [guia completo](docs/GUIA-COMPLETO.md).
 
 ## Licença
 
-MIT
+MIT — veja também o [aviso legal](docs/AVISO-LEGAL.md).

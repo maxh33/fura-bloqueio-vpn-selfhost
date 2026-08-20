@@ -51,6 +51,10 @@ Instale o [OpenVPN Connect](https://openvpn.net/client/), importe o arquivo `.ov
 
 Veja [TROUBLESHOOTING.md](TROUBLESHOOTING.md).
 
+## Aviso legal
+
+Veja [AVISO-LEGAL.md](AVISO-LEGAL.md).
+
 ## Bônus opcional
 
 Quer ajudar mais gente a achar este projeto (ou melhorar seus próprios repositórios no GitHub)? Veja [SEO-OPCIONAL.md](SEO-OPCIONAL.md).
