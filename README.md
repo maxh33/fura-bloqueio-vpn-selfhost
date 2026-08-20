@@ -13,7 +13,7 @@ Um arquivo `.ovpn` que você importa no app **OpenVPN Connect** (Windows, Mac, L
 1. Crie uma VPS free tier — veja as opções em [docs/ESCOLHER-VPS.md](docs/ESCOLHER-VPS.md) (recomendamos Oracle Cloud, grátis pra sempre).
 2. Conecte por SSH e clone este repo:
    ```bash
-   git clone https://github.com/maxh33/-fura-bloqueio-vpn-selfhost.git
+   git clone https://github.com/maxh33/fura-bloqueio-vpn-selfhost.git
    cd fura-bloqueio
    ```
 3. Prepare a VPS inteira com um comando (firewall, atualizações, Docker, servidor VPN):

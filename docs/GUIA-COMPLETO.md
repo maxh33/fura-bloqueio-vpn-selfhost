@@ -10,7 +10,7 @@ Veja [ESCOLHER-VPS.md](ESCOLHER-VPS.md) — recomendamos Oracle Cloud (grátis p
 
 ```bash
 ssh usuario@SEU_IP
-git clone https://github.com/maxh33/-fura-bloqueio-vpn-selfhost.git
+git clone https://github.com/maxh33/fura-bloqueio-vpn-selfhost.git
 cd fura-bloqueio
 ```
 
