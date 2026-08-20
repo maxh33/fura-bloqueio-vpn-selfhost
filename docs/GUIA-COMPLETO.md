@@ -11,7 +11,7 @@ Veja [ESCOLHER-VPS.md](ESCOLHER-VPS.md) — recomendamos Oracle Cloud (grátis p
 ```bash
 ssh usuario@SEU_IP
 git clone https://github.com/maxh33/fura-bloqueio-vpn-selfhost.git
-cd fura-bloqueio
+cd fura-bloqueio-vpn-selfhost
 ```
 
 ### 2. Rode o bootstrap (comando 1)

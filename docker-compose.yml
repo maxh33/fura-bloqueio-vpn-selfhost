@@ -1,3 +1,5 @@
+name: fura-bloqueio
+
 volumes:
   openvpn-data:
     driver: local

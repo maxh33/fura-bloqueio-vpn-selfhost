@@ -14,7 +14,7 @@ Um arquivo `.ovpn` que você importa no app **OpenVPN Connect** (Windows, Mac, L
 2. Conecte por SSH e clone este repo:
    ```bash
    git clone https://github.com/maxh33/fura-bloqueio-vpn-selfhost.git
-   cd fura-bloqueio
+   cd fura-bloqueio-vpn-selfhost
    ```
 3. Prepare a VPS inteira com um comando (firewall, atualizações, Docker, servidor VPN):
    ```bash
