@@ -1,0 +1,4 @@
+.env
+clientes/*.ovpn
+backups/*.tar.gz
+*.log
