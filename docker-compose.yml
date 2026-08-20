@@ -1,0 +1,47 @@
+volumes:
+  openvpn-data:
+    driver: local
+
+services:
+  openvpn:
+    image: kylemanna/openvpn:latest
+    container_name: fura-bloqueio-openvpn
+    restart: unless-stopped
+
+    # Hardening — mantém só o que o OpenVPN de fato precisa
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    cap_add:
+      - NET_ADMIN        # exigido p/ tun/routing — não remover, o container não sobe sem isso
+      - NET_RAW          # iptables (nat/masquerade) falha sem isso mesmo com NET_ADMIN
+      - SETGID           # openvpn dropa privilégio pra 'nogroup' depois de subir a interface
+      - SETUID           # idem, pra 'nobody'
+      - CHOWN            # ajuste de dono em /dev/net/tun na subida
+    devices:
+      - /dev/net/tun
+
+    ports:
+      - "1194:1194/udp"
+
+    volumes:
+      - openvpn-data:/etc/openvpn
+
+    environment:
+      - EASYRSA_KEY_SIZE=2048
+      - EASYRSA_CA_EXPIRE=3650
+      - EASYRSA_CERT_EXPIRE=3650
+
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
+
+    healthcheck:
+      test: ["CMD-SHELL", "pgrep openvpn || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
