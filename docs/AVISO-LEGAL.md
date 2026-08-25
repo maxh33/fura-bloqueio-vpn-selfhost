@@ -1,3 +1,5 @@
+*Português | [English](AVISO-LEGAL.en.md)*
+
 # Aviso legal
 
 Este projeto é software livre, distribuído sob licença MIT (veja [LICENSE](../LICENSE)), "como está", sem garantia de nenhum tipo.

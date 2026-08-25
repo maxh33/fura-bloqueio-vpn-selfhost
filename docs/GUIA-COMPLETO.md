@@ -1,3 +1,5 @@
+*Português | [English](GUIA-COMPLETO.en.md)*
+
 # Guia completo
 
 ## Passo a passo detalhado

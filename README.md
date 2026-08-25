@@ -1,3 +1,5 @@
+*Português | [English](README.en.md)*
+
 # FuraBloqueio
 
 VPN pessoal grátis, na sua própria VPS — não numa empresa de fora guardando log da sua navegação. Feito pra driblar a censura crescente no Brasil, sem mensalidade, rodando num free tier (Oracle Cloud, AWS, Google Cloud).

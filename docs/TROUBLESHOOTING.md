@@ -1,3 +1,5 @@
+*Português | [English](TROUBLESHOOTING.en.md)*
+
 # Problemas comuns
 
 **`bootstrap.sh` falhou no meio do caminho**

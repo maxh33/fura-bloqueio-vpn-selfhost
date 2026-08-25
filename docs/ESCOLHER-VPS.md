@@ -1,3 +1,5 @@
+*Português | [English](ESCOLHER-VPS.en.md)*
+
 # Escolher uma VPS free-tier
 
 | Provedor | Plano | RAM | vCPU | Duração | Observação |
