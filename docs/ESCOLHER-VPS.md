@@ -21,3 +21,7 @@
    ```
    Rode isso e siga direto pro `bootstrap.sh` — a janela sem firewall é curta e a VPS não expõe nada além do SSH que você já está usando.
 7. Conecte via SSH e siga o [README principal](../README.md).
+
+## Quer hospedar fora do Brasil?
+
+Veja as considerações de jurisdição em [AVISO-LEGAL.md](AVISO-LEGAL.md). Ponto prático: a Oracle Cloud trava a região "home" da sua conta na criação — pra hospedar em outro país normalmente precisa criar uma **conta nova** (tenancy nova), não dá pra só trocar a região de uma instância dentro da mesma conta free tier já existente. Mesma limitação costuma valer pra AWS/GCP dependendo do plano.
