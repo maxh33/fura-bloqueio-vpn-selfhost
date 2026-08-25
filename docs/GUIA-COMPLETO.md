@@ -6,6 +6,30 @@
 
 Veja [ESCOLHER-VPS.md](ESCOLHER-VPS.md) — recomendamos Oracle Cloud (grátis pra sempre). Precisa ser Ubuntu 22.04/24.04.
 
+### 0.5. Prepare a VPS (antes de clonar)
+
+Isso varia bastante entre provedores (Oracle, AWS, GCP, Hetzner, etc). O `bootstrap.sh` cuida da maior parte, mas alguns passos precisam acontecer manualmente ANTES dele, na ordem certa:
+
+1. Atualize o sistema:
+   ```bash
+   sudo apt update && sudo apt upgrade -y
+   ```
+2. Adicione sua chave SSH pública ao `authorized_keys` do usuário que você vai usar — o `bootstrap.sh` só desativa login por senha se já achar uma chave configurada, senão pula o hardening de SSH em silêncio (só um aviso):
+   ```bash
+   mkdir -p ~/.ssh && chmod 700 ~/.ssh
+   echo "SUA_CHAVE_PUBLICA_AQUI" >> ~/.ssh/authorized_keys
+   chmod 600 ~/.ssh/authorized_keys
+   ```
+   Teste login por chave numa sessão nova antes de continuar (não feche a sessão atual até confirmar).
+3. Confira se a VPS já vem com algum firewall pré-configurado fora do `ufw` — comum em imagens oficiais de alguns provedores (ex: Oracle, veja o gotcha em [ESCOLHER-VPS.md](ESCOLHER-VPS.md)):
+   ```bash
+   sudo iptables -L -n -v
+   ```
+   Se aparecer regra além do básico (loopback/established/ICMP), resolva o conflito antes de deixar o `bootstrap.sh` configurar o `ufw` por cima — os dois brigando dá firewall imprevisível depois de um reboot.
+4. Confirme que as portas 22/TCP e 1194/UDP já estão liberadas no firewall do **provedor** (fora da VPS) — passo 5 de [ESCOLHER-VPS.md](ESCOLHER-VPS.md). Sem isso, o tráfego nem chega na VPS mesmo com `ufw`/`iptables` liberados por dentro.
+
+Feito isso, segue pro passo 1.
+
 ### 1. Conecte na VPS e clone este repo
 
 ```bash
