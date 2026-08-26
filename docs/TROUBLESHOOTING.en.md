@@ -11,6 +11,9 @@ If you have access to the provider's web console (AWS/Oracle/GCP offer a "serial
 **Firewall seems to "reset" itself after a reboot, or port 1194 closes out of nowhere**
 Some VPS images (Oracle's official Ubuntu image is the most common case) already ship with a pre-configured `iptables`, independent of `ufw`. If `bootstrap.sh` ran and enabled `ufw` on top of that existing firewall, the two can load in different orders on boot and one overwrites the other. See step 0.5 of [GUIA-COMPLETO.en.md](GUIA-COMPLETO.en.md) — fix this BEFORE running `bootstrap.sh`, not after.
 
+**`git clone` gives `bash: git: command not found`**
+Minimal VPS image doesn't ship with `git`. Install it first: `sudo apt update && sudo apt install -y git`. See step 0.5 of [GUIA-COMPLETO.en.md](GUIA-COMPLETO.en.md).
+
 **`docker compose up -d` doesn't bring the container up**
 Check `docker compose logs openvpn`. Common error: port 1194/UDP already in use, or the provider's external firewall (not the VPS's `ufw`) blocking the port — see step 5 of [ESCOLHER-VPS.en.md](ESCOLHER-VPS.en.md).
 

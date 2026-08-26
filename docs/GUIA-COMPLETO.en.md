@@ -12,9 +12,10 @@ See [ESCOLHER-VPS.en.md](ESCOLHER-VPS.en.md) — we recommend Oracle Cloud (free
 
 This varies quite a bit between providers (Oracle, AWS, GCP, Hetzner, etc). `bootstrap.sh` handles most of it, but a few steps need to happen manually BEFORE it, in the right order:
 
-1. Update the system:
+1. Update the system and make sure `git` is installed — minimal VPS images (Oracle's Ubuntu included) often ship without it:
    ```bash
    sudo apt update && sudo apt upgrade -y
+   sudo apt install -y git
    ```
 2. Add your public SSH key to the `authorized_keys` of the user you'll be using — `bootstrap.sh` only disables password login if it finds a key already configured, otherwise it silently skips SSH hardening (just a warning):
    ```bash
