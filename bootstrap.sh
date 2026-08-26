@@ -19,7 +19,7 @@ run() {
   fi
 }
 
-TOTAL_STEPS=10
+TOTAL_STEPS=11
 STEP_N=0
 step() {
   STEP_N=$((STEP_N + 1))
@@ -121,6 +121,14 @@ if ! command -v docker > /dev/null 2>&1; then
   [ -n "$SUDO_USER" ] && run usermod -aG docker "$SUDO_USER"
 else
   log "docker: ok"
+fi
+
+step "emulação de arquitetura"
+if [ "$(uname -m)" = "aarch64" ] || [ "$(uname -m)" = "arm64" ]; then
+  log "host arm64 detectado — a imagem do OpenVPN só existe em amd64, instalando emulação QEMU..."
+  run docker run --rm --privileged tonistiigi/binfmt --install all
+else
+  log "host amd64 — emulação não necessária."
 fi
 
 step "inicializar PKI"
