@@ -19,7 +19,7 @@ run() {
   fi
 }
 
-TOTAL_STEPS=12
+TOTAL_STEPS=13
 STEP_N=0
 step() {
   STEP_N=$((STEP_N + 1))
@@ -149,6 +149,14 @@ if ! command -v docker > /dev/null 2>&1; then
   [ -n "$SUDO_USER" ] && run usermod -aG docker "$SUDO_USER"
 else
   log "docker: ok"
+fi
+
+step "croc (entrega do .ovpn)"
+if ! command -v croc > /dev/null 2>&1; then
+  log "instalando croc..."
+  run bash -c "curl -fsSL https://getcroc.schollz.com | bash"
+else
+  log "croc: ok"
 fi
 
 step "emulação de arquitetura"

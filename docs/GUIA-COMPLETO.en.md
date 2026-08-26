@@ -57,11 +57,11 @@ Doesn't depend on any AI — it's a plain bash script, you can read the whole th
 ./novo-cliente.sh YOUR_NAME
 ```
 
-Generates the `.ovpn` file and delivers it via [croc](https://github.com/schollz/croc) — a short code shows up on screen. On your computer (Windows, Mac, or Linux), install croc and type that code to receive the file, no need to know scp or SSH.
+Generates the `.ovpn` file and delivers it via [croc](https://github.com/schollz/croc) — a short code and a QR code show up on screen. On your computer (Windows, Mac, or Linux), install croc and type the code to receive the file. On your phone, it's easier: point the camera at the QR code, it opens in the browser and downloads directly, no install needed.
 
 ### 4. Connect
 
-Install [OpenVPN Connect](https://openvpn.net/client/), import the `.ovpn` file you received, hit connect.
+Install the [OpenVPN Connect](https://openvpn.net/client/) app (Windows/Mac/Linux, or [Android](https://play.google.com/store/apps/details?id=net.openvpn.openvpn)/[iOS](https://apps.apple.com/app/openvpn-connect/id590379981)). On your phone: open the app, tap **+** (add profile), pick the `.ovpn` file you received, import it, and flip the connect toggle. Desktop flow is the same (import file → connect).
 
 ## Other commands
 

@@ -24,11 +24,11 @@ log "arquivo gerado: clientes/$CLIENT_NAME.ovpn"
 
 if command -v croc > /dev/null 2>&1; then
   echo
-  log "entregando via croc — envie o código abaixo pra quem vai usar (Windows/Mac/Linux):"
-  echo "  No computador de destino: instale o croc e rode 'croc <código>'"
-  echo "  Instruções: https://github.com/schollz/croc#install"
+  log "entregando via croc:"
+  echo "  No computador (Windows/Mac/Linux): instale o croc e rode 'croc <código>' — https://github.com/schollz/croc#install"
+  echo "  No celular: aponte a câmera pro QR abaixo (abre getcroc.com no navegador, sem instalar nada)"
   echo
-  croc send "clientes/$CLIENT_NAME.ovpn"
+  croc send --qr "clientes/$CLIENT_NAME.ovpn"
 else
   warn "croc não instalado nesta VPS."
   echo "  Instale com: curl https://getcroc.schollz.com | bash"

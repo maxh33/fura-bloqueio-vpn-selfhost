@@ -57,11 +57,11 @@ Não depende de nenhuma IA — é um script bash comum, dá pra ler ele inteiro 
 ./novo-cliente.sh SEU_NOME
 ```
 
-Gera o arquivo `.ovpn` e entrega via [croc](https://github.com/schollz/croc) — aparece um código curto na tela. No seu computador (Windows, Mac ou Linux), instale o croc e digite esse código pra receber o arquivo, sem precisar saber usar scp ou SSH.
+Gera o arquivo `.ovpn` e entrega via [croc](https://github.com/schollz/croc) — aparece um código curto e um QR na tela. No computador (Windows, Mac ou Linux), instale o croc e digite o código pra receber o arquivo. No celular, é mais fácil: aponta a câmera pro QR, abre no navegador e baixa direto, sem instalar nada.
 
 ### 4. Conecte
 
-Instale o [OpenVPN Connect](https://openvpn.net/client/), importe o arquivo `.ovpn` recebido, aperte conectar.
+Instale o app [OpenVPN Connect](https://openvpn.net/client/) (Windows/Mac/Linux ou [Android](https://play.google.com/store/apps/details?id=net.openvpn.openvpn)/[iOS](https://apps.apple.com/app/openvpn-connect/id590379981)). No celular: abra o app, toque em **+** (adicionar perfil), escolha o arquivo `.ovpn` recebido, importe, e ligue a chavinha de conexão. No desktop o fluxo é o mesmo (importar arquivo → conectar).
 
 ## Outros comandos
 
