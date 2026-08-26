@@ -24,6 +24,14 @@ services:
     devices:
       - /dev/net/tun
 
+    # A imagem só traz iptables legado, que quebra em hosts com backend nftables
+    # (comum em kernels novos, ex: Ubuntu 22.04+/24.04, independe de arquitetura) —
+    # força o container a usar a variante nft antes de subir o OpenVPN.
+    command: >
+      sh -c "update-alternatives --set iptables /sbin/iptables-nft 2>/dev/null;
+      update-alternatives --set ip6tables /sbin/ip6tables-nft 2>/dev/null;
+      exec ovpn_run"
+
     ports:
       - "1194:1194/udp"
 
@@ -34,9 +42,6 @@ services:
       - EASYRSA_KEY_SIZE=2048
       - EASYRSA_CA_EXPIRE=3650
       - EASYRSA_CERT_EXPIRE=3650
-      # NAT/masquerade fica por conta do host (bootstrap.sh cuida disso via ufw) —
-      # o iptables legacy dentro da imagem quebra em hosts que usam nftables (comum em kernels novos).
-      - OVPN_DEFROUTE=0
 
     deploy:
       resources:

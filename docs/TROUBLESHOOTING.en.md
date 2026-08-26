@@ -21,7 +21,12 @@ Some Ubuntu images name the service `ssh`, not `sshd`. The hardening file was al
 Check `docker compose logs openvpn`. Common error: port 1194/UDP already in use, or the provider's external firewall (not the VPS's `ufw`) blocking the port — see step 5 of [ESCOLHER-VPS.en.md](ESCOLHER-VPS.en.md).
 
 **Container stuck `Restarting` with `iptables v1.8.4 (legacy): can't initialize iptables table 'nat'`**
-The `kylemanna/openvpn` image uses legacy iptables, which breaks on hosts with an nftables backend (common on newer kernels — Ubuntu 22.04+/24.04, also happens on ARM). `bootstrap.sh` already configures the container to skip that (`OVPN_DEFROUTE=0`) and does NAT via the host's `ufw` instead. If you cloned before this fix, run `git pull && sudo ./bootstrap.sh` again.
+The `kylemanna/openvpn` image uses legacy iptables, which breaks on hosts with an nftables backend (common on newer kernels — Ubuntu 22.04+/24.04, regardless of CPU architecture). `docker-compose.yml` now forces the container to use `iptables-nft` before starting OpenVPN. If you had an older version of this project (or tried the host-side NAT workaround — doesn't work reliably, the host has no route to the VPN's subnet, causing flaky connections/intermittent DNS failures), update and recreate:
+```bash
+git pull
+sudo docker compose up -d --force-recreate
+```
+If you manually edited `/etc/ufw/before.rules` adding a `# fura-bloqueio-nat` block, remove it and run `sudo ufw reload` — it conflicts with the correct NAT (now done inside the container).
 
 **`./novo-cliente.sh` or `./revogar-cliente.sh` says "Docker isn't running or you don't have permission to use it"**
 `bootstrap.sh` adds you to the `docker` group, but that only takes effect in a new SSH session. Log out and back in (`exit` + reconnect), or run the command with `sudo` for now.

@@ -19,7 +19,7 @@ run() {
   fi
 }
 
-TOTAL_STEPS=13
+TOTAL_STEPS=12
 STEP_N=0
 step() {
   STEP_N=$((STEP_N + 1))
@@ -84,34 +84,6 @@ else
   log "ufw: já ativo, garantindo regras..."
   run ufw allow "$SSH_PORT"/tcp
   run ufw allow 1194/udp
-fi
-
-step "NAT no host (VPN -> internet)"
-# O iptables legacy da imagem kylemanna/openvpn quebra em hosts com backend nftables
-# (comum em kernels novos, ex: Ubuntu 22.04+/24.04) — "can't initialize iptables table nat".
-# Por isso o container roda com OVPN_DEFROUTE=0 e o NAT fica por conta do ufw do host.
-OVPN_SUBNET="192.168.255.0/24"
-EGRESS_IFACE=$(ip -4 route show default | awk '{for(i=1;i<=NF;i++) if ($i=="dev") print $(i+1)}' | head -1)
-if [ -z "$EGRESS_IFACE" ]; then
-  warn "não consegui detectar a interface de rede padrão — configure o NAT manualmente (veja docs/TROUBLESHOOTING.md)."
-else
-  if ! grep -q '^net/ipv4/ip_forward=1$' /etc/ufw/sysctl.conf 2>/dev/null; then
-    $DRY_RUN || echo 'net/ipv4/ip_forward=1' >> /etc/ufw/sysctl.conf
-  fi
-  if ! grep -q '# fura-bloqueio-nat' /etc/ufw/before.rules 2>/dev/null; then
-    log "adicionando NAT/masquerade pro tráfego da VPN sair pela internet (interface $EGRESS_IFACE)..."
-    $DRY_RUN || cat >> /etc/ufw/before.rules <<EOF
-
-# fura-bloqueio-nat
-*nat
-:POSTROUTING ACCEPT [0:0]
--A POSTROUTING -s $OVPN_SUBNET -o $EGRESS_IFACE -j MASQUERADE
-COMMIT
-EOF
-    run ufw reload
-  else
-    log "NAT: já configurado."
-  fi
 fi
 
 step "fail2ban"
