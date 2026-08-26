@@ -14,10 +14,10 @@ CLIENT_NAME="$1"
 require_docker
 require_container_running
 
-if ! docker compose run --rm openvpn ovpn_listclients < /dev/null | grep -q "^$CLIENT_NAME,"; then
+if ! docker compose exec -T openvpn ovpn_listclients < /dev/null | grep -q "^$CLIENT_NAME,"; then
   err "cliente '$CLIENT_NAME' não existe."
   echo "Clientes disponíveis:"
-  docker compose run --rm openvpn ovpn_listclients < /dev/null
+  docker compose exec -T openvpn ovpn_listclients < /dev/null
   exit 1
 fi
 
@@ -27,7 +27,7 @@ echo
 
 log "revogando $CLIENT_NAME..."
 # ovpn_revokeclient já regenera e copia o CRL sozinho — não existe um ovpn_getcrl separado nesta imagem
-docker compose run --rm -e EASYRSA_BATCH=1 openvpn ovpn_revokeclient "$CLIENT_NAME" < /dev/null
+docker compose exec -T -e EASYRSA_BATCH=1 openvpn ovpn_revokeclient "$CLIENT_NAME" < /dev/null
 
 rm -f "clientes/$CLIENT_NAME.ovpn"
 log "$CLIENT_NAME revogado. Ele não consegue mais conectar."

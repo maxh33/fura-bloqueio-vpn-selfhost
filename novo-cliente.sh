@@ -16,10 +16,10 @@ require_docker
 require_container_running
 
 log "gerando certificado pra $CLIENT_NAME..."
-docker compose run --rm openvpn easyrsa build-client-full "$CLIENT_NAME" nopass < /dev/null
+docker compose exec -T openvpn easyrsa build-client-full "$CLIENT_NAME" nopass < /dev/null
 
 mkdir -p clientes
-docker compose run --rm openvpn ovpn_getclient "$CLIENT_NAME" < /dev/null > "clientes/$CLIENT_NAME.ovpn"
+docker compose exec -T openvpn ovpn_getclient "$CLIENT_NAME" < /dev/null > "clientes/$CLIENT_NAME.ovpn"
 log "arquivo gerado: clientes/$CLIENT_NAME.ovpn"
 
 if command -v croc > /dev/null 2>&1; then
