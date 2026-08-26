@@ -34,6 +34,9 @@ services:
       - EASYRSA_KEY_SIZE=2048
       - EASYRSA_CA_EXPIRE=3650
       - EASYRSA_CERT_EXPIRE=3650
+      # NAT/masquerade fica por conta do host (bootstrap.sh cuida disso via ufw) —
+      # o iptables legacy dentro da imagem quebra em hosts que usam nftables (comum em kernels novos).
+      - OVPN_DEFROUTE=0
 
     deploy:
       resources:

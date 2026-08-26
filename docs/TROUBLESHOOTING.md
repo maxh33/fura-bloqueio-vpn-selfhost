@@ -20,6 +20,12 @@ Algumas imagens Ubuntu chamam o serviço de `ssh`, não `sshd`. O arquivo de har
 **`docker compose up -d` não sobe o container**
 Confira `docker compose logs openvpn`. Erro comum: porta 1194/UDP já em uso, ou o firewall externo do provedor (não o `ufw` da VPS) bloqueando a porta — veja o passo 5 de [ESCOLHER-VPS.md](ESCOLHER-VPS.md).
 
+**Container fica em `Restarting` com `iptables v1.8.4 (legacy): can't initialize iptables table 'nat'`**
+A imagem `kylemanna/openvpn` usa iptables legacy, que quebra em hosts com backend nftables (comum em kernels novos — Ubuntu 22.04+/24.04, também acontece em ARM). `bootstrap.sh` já configura o container pra não tentar isso (`OVPN_DEFROUTE=0`) e faz o NAT pelo `ufw` do host. Se você clonou antes dessa correção, rode `git pull && sudo ./bootstrap.sh` de novo.
+
+**`./novo-cliente.sh` ou `./revogar-cliente.sh` dá "Docker não está rodando ou você não tem permissão pra usá-lo"**
+O `bootstrap.sh` te adiciona ao grupo `docker`, mas isso só vale numa sessão SSH nova. Saia e entre de novo (`exit` + reconectar) ou rode o comando com `sudo` por enquanto.
+
 **Cliente `.ovpn` não conecta**
 Confirme que 1194/UDP está liberado tanto no `ufw` da VPS quanto no firewall do provedor. Teste com `docker compose exec openvpn ovpn_listclients` pra ver se o cliente existe.
 
