@@ -14,6 +14,9 @@ Some VPS images (Oracle's official Ubuntu image is the most common case) already
 **`git clone` gives `bash: git: command not found`**
 Minimal VPS image doesn't ship with `git`. Install it first: `sudo apt update && sudo apt install -y git`. See step 0.5 of [GUIA-COMPLETO.en.md](GUIA-COMPLETO.en.md).
 
+**`bootstrap.sh` stops at step 6 with `Failed to reload sshd.service: Unit sshd.service not found`**
+Some Ubuntu images name the service `ssh`, not `sshd`. The hardening file was already written by this point, it just needs to be applied. Run `sudo systemctl reload ssh`, then `git pull && sudo ./bootstrap.sh` again to continue from step 7 onward.
+
 **`docker compose up -d` doesn't bring the container up**
 Check `docker compose logs openvpn`. Common error: port 1194/UDP already in use, or the provider's external firewall (not the VPS's `ufw`) blocking the port — see step 5 of [ESCOLHER-VPS.en.md](ESCOLHER-VPS.en.md).
 

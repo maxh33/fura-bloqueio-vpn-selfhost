@@ -104,7 +104,7 @@ if [ -n "$SUDO_USER" ] && [ -s "/home/$SUDO_USER/.ssh/authorized_keys" ]; then
 PasswordAuthentication no
 PermitRootLogin no
 EOF
-    run systemctl reload sshd
+    run systemctl reload ssh || run systemctl reload sshd || warn "não consegui recarregar o SSH automaticamente — rode manualmente: sudo systemctl reload ssh"
     log "SSH hardening aplicado."
   else
     warn "SSH hardening pulado (você pode rodar bootstrap.sh de novo depois)."
