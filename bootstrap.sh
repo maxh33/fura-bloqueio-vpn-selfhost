@@ -139,8 +139,15 @@ if [ -z "$(docker compose run --rm openvpn sh -c 'ls /etc/openvpn/pki 2>/dev/nul
   [ -f .env ] || cp .env.example .env
   # shellcheck disable=SC1091
   source .env
+  DETECTED_IP=""
+  command -v curl > /dev/null 2>&1 && DETECTED_IP=$(curl -s --max-time 3 https://ifconfig.me || true)
   while [ -z "$SERVER_ADDR" ] || [ "$SERVER_ADDR" = "seu-ip-ou-dominio-aqui" ]; do
-    read -r -p "IP público ou domínio desta VPS: " SERVER_ADDR
+    if [ -n "$DETECTED_IP" ]; then
+      read -r -p "IP público ou domínio desta VPS [Enter usa $DETECTED_IP]: " SERVER_ADDR
+      SERVER_ADDR="${SERVER_ADDR:-$DETECTED_IP}"
+    else
+      read -r -p "IP público ou domínio desta VPS: " SERVER_ADDR
+    fi
     [ -z "$SERVER_ADDR" ] && warn "não pode ficar em branco, digite o IP público da VPS."
   done
   run docker compose run --rm openvpn ovpn_genconfig -u "udp://$SERVER_ADDR" < /dev/null
