@@ -24,11 +24,10 @@ This varies quite a bit between providers (Oracle, AWS, GCP, Hetzner, etc). `boo
    chmod 600 ~/.ssh/authorized_keys
    ```
    Test key-based login in a new session before continuing (don't close the current session until you confirm).
-3. Check whether the VPS already ships with a firewall preconfigured outside of `ufw` — common on official images from some providers (e.g. Oracle, see the gotcha in [ESCOLHER-VPS.en.md](ESCOLHER-VPS.en.md)):
+3. (Informational) Some official images ship with a firewall preconfigured outside of `ufw` (e.g. Oracle — see the gotcha in [ESCOLHER-VPS.en.md](ESCOLHER-VPS.en.md)). `bootstrap.sh` handles this on its own when it installs `ufw` (tested on a real VPS). This is just for diagnosis if something looks off afterward:
    ```bash
    sudo iptables -L -n -v
    ```
-   If rules beyond the basics show up (loopback/established/ICMP), resolve the conflict before letting `bootstrap.sh` configure `ufw` on top — the two fighting each other means an unpredictable firewall after a reboot.
 4. Confirm that ports 22/TCP and 1194/UDP are already open in the **provider's** firewall (outside the VPS) — step 5 of [ESCOLHER-VPS.en.md](ESCOLHER-VPS.en.md). Without this, traffic never reaches the VPS even with `ufw`/`iptables` open on the inside.
 
 Once that's done, move on to step 1.
@@ -74,7 +73,7 @@ Install the [OpenVPN Connect](https://openvpn.net/client/) app (Windows/Mac/Linu
 
 - Client certificates are generated without their own password (`nopass`) — simpler for day-to-day use, fine for personal/family use. If you want more security, you can add a password manually (see [kylemanna/openvpn](https://github.com/kylemanna/docker-openvpn)'s docs).
 - Officially supported only on Ubuntu/Debian.
-- `croc` is this project's only external dependency (not a standard `apt`/`docker` tool) — chosen because it solves exactly the problem of "getting a file off the VPS without leaving a port open," without reinventing that.
+- `croc` is this project's main external dependency (not a standard `apt`/`docker` tool) — chosen because it solves exactly the problem of "getting a file off the VPS without leaving a port open," without reinventing that. On **arm64** VPS (Oracle Ampere and similar), `bootstrap.sh` also installs QEMU emulation (`tonistiigi/binfmt`) — needed because the `kylemanna/openvpn` image only exists for amd64; no impact on x86 VPS.
 
 ## Ran into a problem?
 

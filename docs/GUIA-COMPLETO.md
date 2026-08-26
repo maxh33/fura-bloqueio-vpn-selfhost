@@ -24,11 +24,10 @@ Isso varia bastante entre provedores (Oracle, AWS, GCP, Hetzner, etc). O `bootst
    chmod 600 ~/.ssh/authorized_keys
    ```
    Teste login por chave numa sessão nova antes de continuar (não feche a sessão atual até confirmar).
-3. Confira se a VPS já vem com algum firewall pré-configurado fora do `ufw` — comum em imagens oficiais de alguns provedores (ex: Oracle, veja o gotcha em [ESCOLHER-VPS.md](ESCOLHER-VPS.md)):
+3. (Informativo) Algumas imagens oficiais já vêm com firewall pré-configurado fora do `ufw` (ex: Oracle — veja o gotcha em [ESCOLHER-VPS.md](ESCOLHER-VPS.md)). O `bootstrap.sh` resolve isso sozinho ao instalar o `ufw` (testado em VPS real). Isso aqui é só diagnóstico, caso algo pareça errado depois:
    ```bash
    sudo iptables -L -n -v
    ```
-   Se aparecer regra além do básico (loopback/established/ICMP), resolva o conflito antes de deixar o `bootstrap.sh` configurar o `ufw` por cima — os dois brigando dá firewall imprevisível depois de um reboot.
 4. Confirme que as portas 22/TCP e 1194/UDP já estão liberadas no firewall do **provedor** (fora da VPS) — passo 5 de [ESCOLHER-VPS.md](ESCOLHER-VPS.md). Sem isso, o tráfego nem chega na VPS mesmo com `ufw`/`iptables` liberados por dentro.
 
 Feito isso, segue pro passo 1.
@@ -74,7 +73,7 @@ Instale o app [OpenVPN Connect](https://openvpn.net/client/) (Windows/Mac/Linux 
 
 - Certificados de cliente são gerados sem senha própria (`nopass`) — mais simples de usar no dia a dia, adequado pra uso pessoal/familiar. Se quiser mais segurança, é possível adicionar senha manualmente (veja a documentação do [kylemanna/openvpn](https://github.com/kylemanna/docker-openvpn)).
 - Suporte oficial só pra Ubuntu/Debian.
-- `croc` é a única dependência externa deste projeto (não é `apt`/`docker` padrão) — escolhido porque resolve exatamente o problema de "tirar um arquivo da VPS sem deixar porta aberta", sem reinventar isso.
+- `croc` é a dependência externa principal deste projeto (não é `apt`/`docker` padrão) — escolhido porque resolve exatamente o problema de "tirar um arquivo da VPS sem deixar porta aberta", sem reinventar isso. Em VPS **arm64** (Oracle Ampere e similares), o `bootstrap.sh` também instala emulação QEMU (`tonistiigi/binfmt`) — necessária porque a imagem `kylemanna/openvpn` só existe em amd64; sem impacto em VPS x86.
 
 ## Deu problema?
 

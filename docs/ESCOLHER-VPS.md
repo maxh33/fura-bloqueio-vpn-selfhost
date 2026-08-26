@@ -16,12 +16,13 @@
 4. Baixe/salve a chave SSH que o provedor gerar — é como você vai acessar a VPS.
 5. Libere a porta 1194/UDP no firewall do próprio provedor (grupo de segurança na AWS, "Security List"/"Network Security Group" na Oracle) — além do que o `bootstrap.sh` configura dentro da VPS, o provedor também tem seu próprio firewall externo.
    - **Na Oracle**: Compute → Instances → sua instância → VNIC → Subnet → Security List → **Add Ingress Rules** → Source CIDR `0.0.0.0/0`, IP Protocol **UDP**, Destination Port Range `1194`. A regra de `22/TCP` já costuma vir liberada por padrão.
-6. **Gotcha Oracle**: a imagem oficial Ubuntu da Oracle já sobe com um `iptables` pré-configurado (default-deny + SSH liberado, fora do `ufw`) — confira com `sudo iptables -L -n -v` antes de rodar o `bootstrap.sh`. Se aparecerem regras aí, desative esse firewall próprio antes de deixar o `bootstrap.sh` configurar o `ufw`, senão os dois passam a brigar (ordem de carregamento no boot decide qual regra vale):
+6. **Gotcha Oracle (o `bootstrap.sh` já resolve sozinho)**: a imagem oficial Ubuntu da Oracle já sobe com um `iptables` pré-configurado (default-deny + SSH liberado, fora do `ufw`). Testado em VPS real: ao instalar o `ufw`, o `apt` remove esse firewall antigo (`iptables-persistent`/`netfilter-persistent`) sozinho, sem passo manual nenhum. Só se algo parecer errado depois do bootstrap (porta fechando sozinha, firewall "resetando"), confira e resolva manualmente:
    ```bash
+   sudo iptables -L -n -v
    sudo systemctl disable --now netfilter-persistent 2>/dev/null || true
    sudo iptables -F && sudo iptables -P INPUT ACCEPT
+   sudo ufw reload
    ```
-   Rode isso e siga direto pro `bootstrap.sh` — a janela sem firewall é curta e a VPS não expõe nada além do SSH que você já está usando.
 7. Conecte via SSH e siga o [README principal](../README.md).
 
 ## Quer hospedar fora do Brasil?
