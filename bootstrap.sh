@@ -207,7 +207,9 @@ if [ -z "$(docker compose run --rm openvpn sh -c 'ls /etc/openvpn/pki 2>/dev/nul
     [ -z "$SERVER_ADDR" ] && warn "não pode ficar em branco, digite o IP público da VPS."
   done
   # -d desativa o NAT do PRÓPRIO container (não funciona sob emulação/nftables — ver step "NAT no host").
-  run docker compose run --rm openvpn ovpn_genconfig -u "udp://$SERVER_ADDR" -d < /dev/null
+  # -p "redirect-gateway def1" é o que faz o cliente rotear TODO o tráfego pela VPN (sem isso
+  # é só split-tunnel pra rede interna 192.168.255.0/24 — a imagem não empurra isso por padrão).
+  run docker compose run --rm openvpn ovpn_genconfig -u "udp://$SERVER_ADDR" -d -p "redirect-gateway def1" < /dev/null
   # EASYRSA_BATCH evita prompt interativo de Common Name (não tem TTY aqui)
   run docker compose run --rm -e EASYRSA_BATCH=1 -e EASYRSA_REQ_CN="$SERVER_ADDR" openvpn ovpn_initpki nopass < /dev/null
 else

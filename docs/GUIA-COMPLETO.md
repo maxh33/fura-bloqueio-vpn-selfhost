@@ -63,6 +63,8 @@ Gera o arquivo `.ovpn` e entrega via [croc](https://github.com/schollz/croc) —
 
 Instale o app [OpenVPN Connect](https://openvpn.net/client/) (Windows/Mac/Linux ou [Android](https://play.google.com/store/apps/details?id=net.openvpn.openvpn)/[iOS](https://apps.apple.com/app/openvpn-connect/id590379981)). No celular: abra o app, toque em **+** (adicionar perfil), escolha o arquivo `.ovpn` recebido, importe, e ligue a chavinha de conexão. No desktop o fluxo é o mesmo (importar arquivo → conectar).
 
+**Confirme que funcionou de verdade**: com a VPN conectada, abra um site tipo "qual meu ip" no dispositivo. Se o IP mostrado for o da sua VPS (não o da sua operadora/rede local), tá tudo certo — o tráfego tá passando pelo túnel. Se ainda mostrar seu IP normal, veja [TROUBLESHOOTING.md](TROUBLESHOOTING.md).
+
 ## Outros comandos
 
 - `./revogar-cliente.sh NOME` — revoga acesso de alguém (perdeu o celular, terminou de usar, etc).

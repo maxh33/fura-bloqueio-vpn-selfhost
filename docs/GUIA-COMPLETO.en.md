@@ -63,6 +63,8 @@ Generates the `.ovpn` file and delivers it via [croc](https://github.com/schollz
 
 Install the [OpenVPN Connect](https://openvpn.net/client/) app (Windows/Mac/Linux, or [Android](https://play.google.com/store/apps/details?id=net.openvpn.openvpn)/[iOS](https://apps.apple.com/app/openvpn-connect/id590379981)). On your phone: open the app, tap **+** (add profile), pick the `.ovpn` file you received, import it, and flip the connect toggle. Desktop flow is the same (import file → connect).
 
+**Confirm it's actually working**: with the VPN connected, open a "what's my ip" site on the device. If the IP shown is your VPS's (not your carrier/local network's), you're good — traffic is going through the tunnel. If it still shows your normal IP, see [TROUBLESHOOTING.en.md](TROUBLESHOOTING.en.md).
+
 ## Other commands
 
 - `./revogar-cliente.sh NAME` — revokes someone's access (lost their phone, done using it, etc).
