@@ -20,13 +20,13 @@ Some Ubuntu images name the service `ssh`, not `sshd`. The hardening file was al
 **`docker compose up -d` doesn't bring the container up**
 Check `docker compose logs openvpn`. Common error: port 1194/UDP already in use, or the provider's external firewall (not the VPS's `ufw`) blocking the port — see step 5 of [ESCOLHER-VPS.en.md](ESCOLHER-VPS.en.md).
 
-**Container stuck `Restarting` with `iptables v1.8.4 (legacy): can't initialize iptables table 'nat'`**
-The `kylemanna/openvpn` image uses legacy iptables, which breaks on hosts with an nftables backend (common on newer kernels — Ubuntu 22.04+/24.04, regardless of CPU architecture). `docker-compose.yml` now forces the container to use `iptables-nft` before starting OpenVPN. If you had an older version of this project (or tried the host-side NAT workaround — doesn't work reliably, the host has no route to the VPN's subnet, causing flaky connections/intermittent DNS failures), update and recreate:
+**Container stuck `Restarting` with `iptables v1.8.4 (legacy): can't initialize iptables table 'nat'` (or the same error with nftables, `Protocol not supported`)**
+The `kylemanna/openvpn` image can't reliably manage its own NAT on modern hosts: legacy iptables breaks with an nftables backend (common on Ubuntu 22.04+/24.04, regardless of architecture), and nftables itself breaks under QEMU emulation (arm64 hosts, e.g. Oracle Ampere). That's why NAT is done on the **host** instead, with the container given a fixed IP (`172.28.0.2`) so the host has a stable route back to the VPN's network — see `docker-compose.yml` and the "NAT no host" step in `bootstrap.sh`. If you cloned before this fix, update and rerun bootstrap (idempotent):
 ```bash
 git pull
-sudo docker compose up -d --force-recreate
+sudo ./bootstrap.sh
 ```
-If you manually edited `/etc/ufw/before.rules` adding a `# fura-bloqueio-nat` block, remove it and run `sudo ufw reload` — it conflicts with the correct NAT (now done inside the container).
+To apply manually without reinitializing the PKI: `sudo docker compose run --rm openvpn ovpn_genconfig -u udp://YOUR_IP -d && sudo docker compose up -d --force-recreate`.
 
 **`./novo-cliente.sh` or `./revogar-cliente.sh` says "Docker isn't running or you don't have permission to use it"**
 `bootstrap.sh` adds you to the `docker` group, but that only takes effect in a new SSH session. Log out and back in (`exit` + reconnect), or run the command with `sudo` for now.

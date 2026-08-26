@@ -4,6 +4,12 @@ volumes:
   openvpn-data:
     driver: local
 
+networks:
+  vpn:
+    ipam:
+      config:
+        - subnet: 172.28.0.0/24
+
 services:
   openvpn:
     image: kylemanna/openvpn:latest
@@ -24,13 +30,11 @@ services:
     devices:
       - /dev/net/tun
 
-    # A imagem só traz iptables legado, que quebra em hosts com backend nftables
-    # (comum em kernels novos, ex: Ubuntu 22.04+/24.04, independe de arquitetura) —
-    # força o container a usar a variante nft antes de subir o OpenVPN.
-    command: >
-      sh -c "update-alternatives --set iptables /sbin/iptables-nft 2>/dev/null;
-      update-alternatives --set ip6tables /sbin/ip6tables-nft 2>/dev/null;
-      exec ovpn_run"
+    # IP fixo: o host precisa de uma rota estável de volta pra rede da VPN
+    # (192.168.255.0/24 só existe dentro do container — NAT é feito no host, ver bootstrap.sh).
+    networks:
+      vpn:
+        ipv4_address: 172.28.0.2
 
     ports:
       - "1194:1194/udp"

@@ -19,7 +19,10 @@ run() {
   fi
 }
 
-TOTAL_STEPS=12
+OVPN_SUBNET="192.168.255.0/24"
+OVPN_CONTAINER_IP="172.28.0.2"
+
+TOTAL_STEPS=13
 STEP_N=0
 step() {
   STEP_N=$((STEP_N + 1))
@@ -84,6 +87,51 @@ else
   log "ufw: já ativo, garantindo regras..."
   run ufw allow "$SSH_PORT"/tcp
   run ufw allow 1194/udp
+fi
+
+step "NAT no host (VPN -> internet)"
+# O container não consegue gerenciar seu próprio NAT de forma confiável (iptables legacy
+# quebra em hosts com backend nftables; nftables quebra sob emulação QEMU em host arm64).
+# Por isso o NAT é feito no host, e o container tem IP fixo (172.28.0.2, ver docker-compose.yml)
+# pra dar uma rota estável de volta pra rede da VPN (que só existe dentro do container).
+EGRESS_IFACE=$(ip -4 route show default | awk '{for(i=1;i<=NF;i++) if ($i=="dev") print $(i+1)}' | head -1)
+if [ -z "$EGRESS_IFACE" ]; then
+  warn "não consegui detectar a interface de rede padrão — configure o NAT manualmente (veja docs/TROUBLESHOOTING.md)."
+else
+  if ! grep -q '^net/ipv4/ip_forward=1$' /etc/ufw/sysctl.conf 2>/dev/null; then
+    $DRY_RUN || echo 'net/ipv4/ip_forward=1' >> /etc/ufw/sysctl.conf
+  fi
+  if ! grep -q '# fura-bloqueio-nat' /etc/ufw/before.rules 2>/dev/null; then
+    log "adicionando NAT/masquerade pro tráfego da VPN sair pela internet (interface $EGRESS_IFACE)..."
+    $DRY_RUN || cat >> /etc/ufw/before.rules <<EOF
+
+# fura-bloqueio-nat
+*nat
+:POSTROUTING ACCEPT [0:0]
+-A POSTROUTING -s $OVPN_SUBNET -o $EGRESS_IFACE -j MASQUERADE
+COMMIT
+EOF
+    run ufw reload
+  else
+    log "NAT: já configurado."
+  fi
+  log "instalando rota persistente pra $OVPN_SUBNET via $OVPN_CONTAINER_IP..."
+  $DRY_RUN || cat > /etc/systemd/system/fura-bloqueio-vpn-route.service <<EOF
+[Unit]
+Description=Rota fura-bloqueio pra rede da VPN (via container Docker do OpenVPN)
+After=docker.service
+Requires=docker.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/bin/sh -c 'for i in \$(seq 1 30); do ip route replace $OVPN_SUBNET via $OVPN_CONTAINER_IP && exit 0; sleep 1; done; exit 1'
+
+[Install]
+WantedBy=multi-user.target
+EOF
+  run systemctl daemon-reload
+  run systemctl enable fura-bloqueio-vpn-route.service
 fi
 
 step "fail2ban"
@@ -158,7 +206,8 @@ if [ -z "$(docker compose run --rm openvpn sh -c 'ls /etc/openvpn/pki 2>/dev/nul
     fi
     [ -z "$SERVER_ADDR" ] && warn "não pode ficar em branco, digite o IP público da VPS."
   done
-  run docker compose run --rm openvpn ovpn_genconfig -u "udp://$SERVER_ADDR" < /dev/null
+  # -d desativa o NAT do PRÓPRIO container (não funciona sob emulação/nftables — ver step "NAT no host").
+  run docker compose run --rm openvpn ovpn_genconfig -u "udp://$SERVER_ADDR" -d < /dev/null
   # EASYRSA_BATCH evita prompt interativo de Common Name (não tem TTY aqui)
   run docker compose run --rm -e EASYRSA_BATCH=1 -e EASYRSA_REQ_CN="$SERVER_ADDR" openvpn ovpn_initpki nopass < /dev/null
 else
@@ -167,6 +216,7 @@ fi
 
 step "subir docker compose"
 run docker compose up -d
+run ip route replace "$OVPN_SUBNET" via "$OVPN_CONTAINER_IP"
 
 step "self-test"
 $DRY_RUN || docker compose ps
