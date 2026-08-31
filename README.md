@@ -26,6 +26,7 @@ Um arquivo `.ovpn` que você importa no app **OpenVPN Connect** (Windows, Mac, L
    ```bash
    ./novo-cliente.sh SEU_NOME
    ```
+   A entrega usa [croc](https://github.com/schollz/croc) (MIT) — transferência ponta a ponta, sem porta aberta na VPS. Aponte a câmera do celular pro QR code que aparece no terminal ou rode o código impresso no seu computador.
 5. Importe o `.ovpn` recebido no [OpenVPN Connect](https://openvpn.net/client/) e conecte.
 
 Pronto — sem mensalidade, sem terceiro no meio do seu tráfego.

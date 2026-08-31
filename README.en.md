@@ -26,6 +26,7 @@ A `.ovpn` file you import into the **OpenVPN Connect** app (Windows, Mac, Linux,
    ```bash
    ./novo-cliente.sh YOUR_NAME
    ```
+   Delivery uses [croc](https://github.com/schollz/croc) (MIT) — end-to-end transfer, no open port on the VPS. Scan the QR code printed in the terminal with your phone, or run the printed code on your computer.
 5. Import the `.ovpn` file into [OpenVPN Connect](https://openvpn.net/client/) and connect.
 
 Done — no monthly fee, no third party sitting in the middle of your traffic.
