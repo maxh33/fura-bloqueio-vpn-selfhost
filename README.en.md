@@ -31,6 +31,20 @@ A `.ovpn` file you import into the **OpenVPN Connect** app (Windows, Mac, Linux,
 
 Done — no monthly fee, no third party sitting in the middle of your traffic.
 
+## Screenshots
+
+Running `./novo-cliente.sh` on a real VPS: certificate generated and delivered via croc, QR code ready to scan with your phone.
+
+![Terminal generating a certificate and croc delivery QR code](images/fura-bloqueio-client-qr.webp)
+
+Receiving the `.ovpn` file on a phone, straight from the browser, nothing to install:
+
+![croc's browser-based receive screen on mobile](images/fura-bloqueio-croc-mobile.webp)
+
+Container and firewall status after `bootstrap.sh`:
+
+![docker compose ps and ufw status showing the VPN healthy and only the necessary ports open](images/fura-bloqueio-docker-status.webp)
+
 ## Questions, other commands, security details?
 
 See the [full guide](docs/GUIA-COMPLETO.en.md).

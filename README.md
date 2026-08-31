@@ -31,6 +31,20 @@ Um arquivo `.ovpn` que você importa no app **OpenVPN Connect** (Windows, Mac, L
 
 Pronto — sem mensalidade, sem terceiro no meio do seu tráfego.
 
+## Prints
+
+Rodando `./novo-cliente.sh` numa VPS real: certificado gerado e entrega via croc, QR code pra escanear com o celular.
+
+![Terminal gerando certificado e QR code de entrega via croc](images/fura-bloqueio-client-qr.webp)
+
+Recebendo o arquivo `.ovpn` no celular, direto do navegador, sem instalar nada:
+
+![Tela de recebimento do croc no navegador do celular](images/fura-bloqueio-croc-mobile.webp)
+
+Status do container e do firewall depois do `bootstrap.sh`:
+
+![docker compose ps e ufw status mostrando a VPN saudável e só as portas necessárias abertas](images/fura-bloqueio-docker-status.webp)
+
 ## Dúvidas, outros comandos, detalhes de segurança?
 
 Veja o [guia completo](docs/GUIA-COMPLETO.md).
